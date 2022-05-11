@@ -1,0 +1,33 @@
+<%- include('header.ejs'); %>
+
+<div class="container-fluid">
+    <form method="POST" onsubmit="return doPost(this);">
+        <div class="form-group">
+            <label>Title</label>
+            <input name="title" class="form-control" placeholder="Title"/>
+        </div>
+
+        <div class="form-group">
+            <label>Content</label>
+            <textarea name="content" class="form-control" placeholder="Content"></textarea>
+        </div>
+
+        <input type="submit" class="btn btn-info" value="Post" />
+    </form>
+</div>
+
+<script>
+    function doPost(form) {
+        $.ajax({
+           url: "/do-post",
+           method: "POST",
+            data: {title: form.title.value, content: form.content.value},
+            success: function (response) {
+               console.log(response);
+            }
+        });
+        return false;
+    }
+</script>
+
+<%- include('footer.ejs'); %>
