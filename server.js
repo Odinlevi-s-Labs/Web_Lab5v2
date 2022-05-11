@@ -15,7 +15,9 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true},
     console.log("DB connected");
 
     app.get("/", function(req, res) {
-       res.send("Hello world");
+        blog.collection("posts").find().sort({"_id": -1}).toArray(function (error, posts) {
+            res.render("user/home", {posts: posts});
+        });
     });
 
     app.get("/admin/dashboard", function (req, res) {
