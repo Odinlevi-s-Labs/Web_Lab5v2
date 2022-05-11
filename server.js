@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
+var ObjectId = require("mongodb").ObjectId;
 
 app.use('/static', express.static(__dirname + "/static"));
 app.set("view engine", "ejs");
@@ -31,6 +32,13 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true},
     app.post("/do-post", function (req, res) {
         blog.collection("posts").insertOne(req.body, function (error, document) {
             res.send("posted successfully");
+        });
+    });
+
+    app.get("/posts/:id", function (req, res) {
+        blog.collection("posts").findOne({"_id": ObjectId(req.params.id)},
+            function (error, post) {
+                res.render("user/post", {post: post});
         });
     });
 
