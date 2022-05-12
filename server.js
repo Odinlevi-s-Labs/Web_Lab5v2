@@ -9,6 +9,8 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
+app.use
+
 var MongoClient = require("mongodb").MongoClient;
 MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true},
     function (error, client) {
@@ -39,6 +41,16 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true},
         blog.collection("posts").findOne({"_id": ObjectId(req.params.id)},
             function (error, post) {
                 res.render("user/post", {post: post});
+        });
+    });
+
+    app.post("/do-comment", function (req, res) {
+        blog.collection("posts").updateOne({ "_id": ObjectId(req.body.post_id) }, {
+            $push: {
+                "comments": {username: req.body.username, comment: req.body.comment}
+            }
+        }, function (error, post) {
+            res.send("comment successful");
         });
     });
 
