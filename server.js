@@ -3,13 +3,14 @@ var app = express();
 var bodyParser = require("body-parser");
 var ObjectId = require("mongodb").ObjectId;
 
+var formidable = require("formidable");
+var fs = require("fs");
+
 app.use('/static', express.static(__dirname + "/static"));
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
-
-app.use
 
 var MongoClient = require("mongodb").MongoClient;
 MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true},
@@ -51,6 +52,18 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true},
             }
         }, function (error, post) {
             res.send("comment successful");
+        });
+    });
+
+    app.post("/do-upload-image", function(req, res) {
+        var formData = new formidable.IncomingForm();
+        formData.parse(req, function (error, fields, files) {
+            var oldPath = files.file.filepath;
+            var newPath = "static/images/" + files.file.newFilename;
+
+           fs.rename(oldPath, newPath, function (err) {
+              res.send("/" + newPath);
+           });
         });
     });
 

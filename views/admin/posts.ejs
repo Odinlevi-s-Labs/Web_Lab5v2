@@ -7,6 +7,11 @@
             <input name="title" class="form-control" placeholder="Title"/>
         </div>
 
+        <!-- Button trigger modal -->
+        <button class = "btn btn-primary" data-toggle = "modal" data-target = "#myModal" type="button">
+            Upload Image
+        </button>
+
         <div class="form-group">
             <label>Content</label>
             <textarea name="content" class="form-control" placeholder="Content"></textarea>
@@ -21,13 +26,62 @@
         $.ajax({
            url: "/do-post",
            method: "POST",
-            data: {title: form.title.value, content: form.content.value},
+            data: {title: form.title.value, content: form.content.value, image: imagePath},
             success: function (response) {
                console.log(response);
             }
         });
         return false;
     }
+</script>
+
+<!-- Modal -->
+<div class = "modal fade" id = "myModal" tabindex = "-1" role = "dialog"
+     aria-labelledby = "myModalLabel" aria-hidden = "true">
+
+    <div class = "modal-dialog">
+        <div class = "modal-content">
+
+            <div class = "modal-header">
+                <h4 class = "modal-title" id = "myModalLabel">
+                    Upload image
+                </h4>
+                <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">
+                    ×
+                </button>
+            </div>
+
+            <div class = "modal-body">
+                <form method="POST" enctype="multipart/form-data" id="form-upload">
+                    <div class="form-group">
+                        <input type="file" name="file" class="form-control" />
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Upload" />
+                </form>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+</div><!-- /.modal -->
+
+<script>
+    var imagePath = "";
+    $("#form-upload").on("submit", function (e) {
+       e.preventDefault();
+       $.ajax({
+           url: "/do-upload-image",
+           method: "POST",
+           data: new FormData(this),
+           contentType: false,
+           cache: false,
+           processData: false,
+           success: function (response) {
+               imagePath = response;
+               $("#myModal").modal("hide");
+           }
+       });
+    });
 </script>
 
 <%- include('footer.ejs'); %>
