@@ -21,7 +21,14 @@
         <div class="col-lg-8">
 
             <!-- Preview Image -->
-            <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+            <a href="#">
+                <% if (post.image) { %>
+                    <img class="img-fluid rounded" src="<%= post.image %>" alt="">
+                <% } else { %>
+                    <img class="img-fluid rounded" src="https://place-hold.it/900x300" alt="">
+                <% }%>
+            </a>
+
 
             <hr>
 
@@ -74,7 +81,7 @@
                 <% post.comments = post.comments.reverse(); %>
                 <% post.comments.forEach(function (comment) { %>
                     <div class="media mb-4">
-                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                        <img class="d-flex mr-3 rounded-circle" src="https://place-hold.it/50x50" alt="">
                         <div class="media-body">
                             <h5 class="mt-0">
                                 <%= comment.username %>

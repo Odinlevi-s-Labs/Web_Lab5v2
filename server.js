@@ -5,6 +5,11 @@ var ObjectId = require("mongodb").ObjectId;
 
 var formidable = require("formidable");
 var fs = require("fs");
+var session = require("express-session");
+app.use(session({
+    key: "admin",
+    secret: "return from abyss"
+}));
 
 app.use('/static', express.static(__dirname + "/static"));
 app.set("view engine", "ejs");
@@ -24,17 +29,43 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true},
         });
     });
 
+    app.get("/do-logout", function(req, res) {
+        req.session.destroy();
+        res.redirect("/admin");
+    });
+
     app.get("/admin/dashboard", function (req, res) {
-        res.render("admin/dashboard");
+        if (req.session.admin) {
+            res.render("admin/dashboard");
+        } else {
+            res.redirect("/admin");
+        }
+    });
+
+    app.get("/admin", function (req, res) {
+        res.render("admin/login");
     });
 
     app.get("/admin/posts", function (req, res) {
-        res.render("admin/posts");
+        if (req.session.admin) {
+            res.render("admin/posts");
+        } else {
+            res.redirect("/admin");
+        }
+    });
+
+    app.post("/do-admin-login", function (req, res) {
+       blog.collection("admins").findOne({"email": req.body.email, "password": req.body.password}, function (error, admin) {
+            if (admin != "") {
+                req.session.admin = admin;
+            }
+            res.send(admin);
+       });
     });
 
     app.post("/do-post", function (req, res) {
         blog.collection("posts").insertOne(req.body, function (error, document) {
-            res.send("posted successfully");
+            res.send({});
         });
     });
 

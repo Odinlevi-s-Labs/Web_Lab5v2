@@ -23,10 +23,12 @@
 
 <script>
     function doPost(form) {
+        var formData = {title: form.title.value, content: form.content.value, image: imagePath};
+
         $.ajax({
            url: "/do-post",
            method: "POST",
-            data: {title: form.title.value, content: form.content.value, image: imagePath},
+            data: formData,
             success: function (response) {
                console.log(response);
             }
